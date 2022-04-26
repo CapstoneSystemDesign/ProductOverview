@@ -1,6 +1,3 @@
-// const featuresModel = require('./featuresModel'); // import more models
-const dbModels = require('./index');
-
 const productsModel = (sequelize, { DataTypes }) => {
   const Product = sequelize.define('product', {
     id: {
@@ -16,10 +13,6 @@ const productsModel = (sequelize, { DataTypes }) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    slogan: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     description: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -34,14 +27,9 @@ const productsModel = (sequelize, { DataTypes }) => {
     },
   });
 
-  // Product.associate = (models) => {
-  //   Product.hasMany(models.Features, { onDelete: 'CASCADE' });
-  // };
-
   Product.allProducts = async () => {
     const products = await Product.findAll({
       limit: 10, // will need to remove when ready for final release
-      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
     return products;
   };
@@ -49,7 +37,6 @@ const productsModel = (sequelize, { DataTypes }) => {
   Product.findById = async (productId) => {
     const product = await Product.findOne({
       where: { id: productId }, // consider omitting created_at & updated_at colns
-      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
     return product;
   };
@@ -59,18 +46,3 @@ const productsModel = (sequelize, { DataTypes }) => {
 
 // export default productsModel;
 module.exports = productsModel;
-
-/*
-  Product.findById = async (productId) => {
-    const product = JSON.stringify(await Product.findOne({
-      where: { id: productId }, // consider omitting created_at & updated_at colns
-    }));
-    // hoping to be an arr of objs dbModels.models.Product.findById
-    product.features = JSON.stringify(
-      await dbModels.models.Features.findFeaturesByProductId(productId),
-    );
-    // product.features = features;
-    console.log('product (clean from metadata) from sequelize: ', product);
-    return product;
-  };
-  */
