@@ -6,8 +6,10 @@
 require('dotenv').config();
 const Sequelize = require('sequelize');
 
-const productsModel = require('./productsModel'); // import more models
-const featuresModel = require('./featuresModel'); // import more models
+const productsModel = require('./productsModel');
+const featuresModel = require('./featuresModel');
+const stylesModel = require('./stylesModel');
+const photosModel = require('./photosModel'); // import more models
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -22,15 +24,17 @@ const sequelize = new Sequelize(
 );
 
 const models = {
-  Product: productsModel(sequelize, Sequelize), // add more models
-  Features: featuresModel(sequelize, Sequelize), // add more models
+  Product: productsModel(sequelize, Sequelize),
+  Features: featuresModel(sequelize, Sequelize),
+  Styles: stylesModel(sequelize, Sequelize), // add more models
+  Photos: photosModel(sequelize, Sequelize),
 };
 
-Object.keys(models).forEach((key) => {
-  if ('associate' in models[key]) {
-    models[key].associate(models);
-  }
-});
+// Object.keys(models).forEach((key) => {
+//   if ('associate' in models[key]) {
+//     models[key].associate(models);
+//   }
+// });
 
 // export { sequelize };
 // export default models;

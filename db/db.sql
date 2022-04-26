@@ -1,3 +1,11 @@
+-- NOTE:
+-- ALTER TABLE features RENAME COLUMN productId TO product_id;
+-- ALTER TABLE related RENAME COLUMN productId TO product_id;
+-- ALTER TABLE styles RENAME COLUMN id TO style_id;
+-- ALTER TABLE skus RENAME COLUMN styleId TO style_id;
+-- ALTER TABLE photos RENAME COLUMN styleId TO style_id;
+-- ALTER TABLE styles RENAME COLUMN default_style TO "default?";
+
 -- CREATE DATABASE productoverview;
 -- psql alancea -h 127.0.0.1 -d productoverview -f db.sql
 -- \c productOverview;
@@ -26,21 +34,19 @@ FROM
   '/Users/alancea/Desktop/RFC2202/productOverview/db/SDCproductsOverview/sanitized_products.csv' WITH (FORMAT CSV, HEADER true);
 
 -- SELECT * from products limit 10;
-ALTER TABLE
-  features
-ADD
-  COLUMN "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-ADD
-  COLUMN "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+-- ALTER TABLE products
+-- ADD COLUMN "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+-- ADD COLUMN "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
 
 -- ALTER TABLE products DROP COLUMN createdat;
 -- ALTER TABLE products DROP COLUMN updatedat;
 -- ALTER TABLE products COLUMN updatedAt ON UPDATE CURRENT_TIMESTAMP;
+
 DROP TABLE IF EXISTS styles CASCADE;
 
 CREATE TABLE styles (
   id serial,
-  productId integer,
+  product_id integer,
   name varchar,
   sale_price integer,
   original_price integer,
@@ -48,7 +54,7 @@ CREATE TABLE styles (
   "createdAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   "updatedAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   PRIMARY KEY (id),
-  FOREIGN KEY (productId) REFERENCES products(id)
+  FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 COPY styles
@@ -56,17 +62,19 @@ FROM
   '/Users/alancea/Desktop/RFC2202/productOverview/db/SDCproductsOverview/sanitized_styles.csv' WITH (FORMAT CSV, HEADER true);
 
 -- SELECT * from styles limit 10;
+-- ALTER TABLE styles RENAME COLUMN id TO style_id;
+
 DROP TABLE IF EXISTS skus CASCADE;
 
 CREATE TABLE skus (
   id serial,
-  styleId integer,
+  style_id integer,
   size varchar(10),
   quantity integer,
   "createdAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   "updatedAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   PRIMARY KEY (id),
-  FOREIGN KEY (styleId) REFERENCES styles(id)
+  FOREIGN KEY (style_id) REFERENCES styles(id)
 );
 
 COPY skus
@@ -78,13 +86,13 @@ DROP TABLE IF EXISTS photos CASCADE;
 
 CREATE TABLE photos (
   id serial,
-  styleId integer,
+  style_id integer,
   url varchar,
   thumbnail_url varchar,
   "createdAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   "updatedAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   primary key (id),
-  foreign key (styleId) REFERENCES styles(id)
+  foreign key (style_id) REFERENCES styles(id)
 );
 
 COPY photos
@@ -96,35 +104,38 @@ DROP TABLE IF EXISTS features CASCADE;
 
 CREATE TABLE features (
   id serial,
-  productid integer,
+  product_id integer,
   feature varchar,
   value varchar,
   "createdAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   "updatedAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   PRIMARY KEY (id),
-  FOREIGN KEY (productid) REFERENCES products(id)
+  FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 COPY features
 FROM
   '/Users/alancea/Desktop/RFC2202/productOverview/db/SDCproductsOverview/features.csv' WITH (FORMAT CSV, HEADER true, NULL '');
 
+-- ALTER TABLE skus RENAME COLUMN styleid TO style_id;
 -- SELECT * from features limit 10;
 DROP TABLE IF EXISTS related CASCADE;
 
 CREATE TABLE related (
   id serial,
-  productId integer,
+  product_id integer,
   current_product_id integer,
   "createdAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   "updatedAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   primary key(id),
-  foreign key(productId) references products(id)
+  foreign key(product_id) references products(id)
 );
 
 COPY related
 FROM
   '/Users/alancea/Desktop/RFC2202/productOverview/db/SDCproductsOverview/related.csv' WITH (FORMAT CSV, HEADER true, NULL '');
+
+-- SELECT * from related limit 10;
 
 -- INSERT INTO
 --   products (

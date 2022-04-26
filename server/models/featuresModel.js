@@ -9,7 +9,7 @@ const featuresModel = (sequelize, { DataTypes }) => {
         notEmpty: true,
       },
     },
-    productid: {
+    product_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -29,8 +29,8 @@ const featuresModel = (sequelize, { DataTypes }) => {
 
   Features.findFeaturesByProductId = async (productId) => {
     const feats = await Features.findAll({
-      where: { productid: productId }, // consider omitting created_at & updated_at colns
-      attributes: { exclude: ['createdAt', 'updatedAt', 'id', 'productid'] }, // also, can use "include: ['...']"
+      where: { product_id: productId }, // consider omitting created_at & updated_at colns
+      attributes: { exclude: ['createdAt', 'updatedAt', 'id', 'product_id'] }, // also, can use "include: ['...']"
     });
     // console.log('feats: ', feats);
     return feats; // must be an array of objs
@@ -39,5 +39,5 @@ const featuresModel = (sequelize, { DataTypes }) => {
   return Features;
 };
 
-// export default productsModel;
+// export default featuresModel;
 module.exports = featuresModel;

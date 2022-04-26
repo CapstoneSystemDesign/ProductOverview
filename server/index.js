@@ -50,8 +50,24 @@ app.get('/products/:productId', (req, res) => {
 });
 
 app.get('/products/:product_id/styles', (req, res) => {
-  res.send('GET styles by product id response: successful');
+  const styles = dbModels.models.Styles.getStylesByProductId(req.params.product_id);
+
+  Promise
+    .all([styles])
+    .then((responses) => {
+      const dataResponse = { product_id: req.params.product_id, results: [] };
+
+      const style = responses[0];
+      // style = JSON.stringify(style);
+      dataResponse.results.push(style);
+      // console.log('prod, after stringify: ', prod);
+      res.send(dataResponse);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 });
+
 app.get('/products/:product_id/related', (req, res) => {
   res.send('GET related items by product id response: successful');
 });
