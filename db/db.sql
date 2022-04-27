@@ -10,7 +10,8 @@
 -- CREATE INDEX indexStyle ON styles("product_id");
 -- CREATE INDEX indexPhotos ON photos("style_id");
 -- CREATE INDEX indexSkus ON skus("style_id");
-CREATE INDEX indexRelated ON related("product_id");
+-- CREATE INDEX indexRelated ON related("product_id");
+-- CREATE INDEX indexFeatures ON features("product_id");
 
 
 ---------------------------
