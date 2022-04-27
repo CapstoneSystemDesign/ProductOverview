@@ -1,5 +1,5 @@
-const photosModel = (sequelize, { DataTypes }) => {
-  const Photos = sequelize.define('photos', {
+const skusModel = (sequelize, { DataTypes }) => {
+  const Skus = sequelize.define('skus', {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -13,21 +13,21 @@ const photosModel = (sequelize, { DataTypes }) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    url: {
+    size: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    thumbnail_url: {
-      type: DataTypes.STRING,
+    quantity: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   });
 
-  Photos.associate = (models) => {
-    Photos.belongsTo(models.Styles, { foreignKey: 'style_id' });
+  Skus.associate = (models) => {
+    Skus.belongsTo(models.Styles, { foreignKey: 'style_id' });
   };
 
-  return Photos;
+  return Skus;
 };
 
-module.exports = photosModel;
+module.exports = skusModel;

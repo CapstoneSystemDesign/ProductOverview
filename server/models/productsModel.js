@@ -1,4 +1,5 @@
 // const featuresModel = require('./featuresModel'); // import more models
+// const stylesModel = require('./featuresModel'); // import more models
 
 const productsModel = (sequelize, { DataTypes }) => {
   const Product = sequelize.define('product', {

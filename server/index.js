@@ -12,7 +12,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
-const dbModels = require('./models/index');
 const db = require('./models/index');
 
 const app = express();
@@ -24,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/products', (req, res) => {
-  dbModels.models.Product.allProducts({})
+  db.models.Product.allProducts({})
     .then((returnedProducts) => {
       // console.log(returnedProducts);
       res.json(returnedProducts);
@@ -32,17 +31,14 @@ app.get('/products', (req, res) => {
 });
 
 app.get('/products/:productId', (req, res) => {
-  const product = dbModels.models.Product.findById(req.params.productId);
-  const features = dbModels.models.Features.findFeaturesByProductId(req.params.productId);
+  const product = db.models.Product.findById(req.params.productId);
+  const features = db.models.Features.findFeaturesByProductId(req.params.productId);
   Promise
     .all([product, features])
-    .then((responses) => {
-      let prod = responses[0];
-      const feat = responses[1];
+    .then(([prdt, feat]) => {
+      const prod = prdt;
       prod.dataValues.features = feat;
-      prod = JSON.stringify(prod);
-      // console.log('prod, after stringify: ', prod);
-      res.send(prod);
+      res.json(prod);
     })
     .catch((err) => {
       console.error(err);
@@ -50,18 +46,14 @@ app.get('/products/:productId', (req, res) => {
 });
 
 app.get('/products/:product_id/styles', (req, res) => {
-  const styles = dbModels.models.Styles.getStylesByProductId(req.params.product_id);
-
+  const styles = db.models.Styles.getStylesByProductId(req.params.product_id);
   Promise
     .all([styles])
     .then((responses) => {
-      const dataResponse = { product_id: req.params.product_id, results: [] };
-
+      const dataResponse = { product_id: req.params.product_id };
       const style = responses[0];
-      // style = JSON.stringify(style);
-      dataResponse.results.push(style);
-      // console.log('prod, after stringify: ', prod);
-      res.send(dataResponse);
+      dataResponse.results = style;
+      res.json(dataResponse);
     })
     .catch((err) => {
       console.error(err);
@@ -69,7 +61,11 @@ app.get('/products/:product_id/styles', (req, res) => {
 });
 
 app.get('/products/:product_id/related', (req, res) => {
-  res.send('GET related items by product id response: successful');
+  db.models.Related.allProducts({})
+    .then((returnedRelated) => {
+      // console.log(returnedProducts);
+      res.json(returnedRelated);
+    });
 });
 
 db.sequelize.sync().then(() => {
@@ -79,11 +75,17 @@ db.sequelize.sync().then(() => {
 });
 
 /*
+
+    .then((responses) => {
+      let prod = responses[0];
+      const feat = responses[1];
+      prod.dataValues.features = feat;
+
 app.get('/products/:productId', (req, res) => {
   // console.log('req.params.product_id: ', req.params.product_id);
-  dbModels.models.Product.findById(req.params.productId)
+  db.models.Product.findById(req.params.productId)
     .then((returnedProduct) => {
-      const features = dbModels.models.Features.findFeaturesByProductId(req.params.productId);
+      const features = db.models.Features.findFeaturesByProductId(req.params.productId);
       return [returnedProduct, features];
       // .then((returnedFeatures) => {
       //   const features = JSON.stringify(returnedFeatures);

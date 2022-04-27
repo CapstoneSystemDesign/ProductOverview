@@ -1,10 +1,18 @@
--- NOTE:
+-- NOTE: Pass these commands into the psql console after table creation!!
+
 -- ALTER TABLE features RENAME COLUMN productId TO product_id;
 -- ALTER TABLE related RENAME COLUMN productId TO product_id;
 -- ALTER TABLE styles RENAME COLUMN id TO style_id;
 -- ALTER TABLE skus RENAME COLUMN styleId TO style_id;
 -- ALTER TABLE photos RENAME COLUMN styleId TO style_id;
 -- ALTER TABLE styles RENAME COLUMN default_style TO "default?";
+-- ALTER TABLE related RENAME COLUMN current_product_id TO "related_product_id";
+-- CREATE INDEX indexStyle ON styles("product_id");
+-- CREATE INDEX indexPhotos ON photos("style_id");
+-- CREATE INDEX indexSkus ON skus("style_id");
+
+
+---------------------------
 
 -- CREATE DATABASE productoverview;
 -- psql alancea -h 127.0.0.1 -d productoverview -f db.sql
@@ -124,7 +132,7 @@ DROP TABLE IF EXISTS related CASCADE;
 CREATE TABLE related (
   id serial,
   product_id integer,
-  current_product_id integer,
+  related_product_id integer,
   "createdAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   "updatedAt" timestamp WITH TIME ZONE DEFAULT current_timestamp,
   primary key(id),
@@ -134,6 +142,19 @@ CREATE TABLE related (
 COPY related
 FROM
   '/Users/alancea/Desktop/RFC2202/productOverview/db/SDCproductsOverview/related.csv' WITH (FORMAT CSV, HEADER true, NULL '');
+
+
+
+-- SELECT "styles"."style_id", "styles"."name", "styles"."sale_price", "styles"."original_price", "styles"."default?",
+-- "photos"."id",
+-- "photos"."style_id",
+-- "photos"."url",
+-- "photos"."thumbnail_url"
+-- FROM "styles" AS "styles"
+-- LEFT OUTER JOIN "photos" AS "photos"
+-- ON "styles"."style_id" = "photos"."style_id"
+-- WHERE "styles"."product_id" = '2';
+
 
 -- SELECT * from related limit 10;
 
