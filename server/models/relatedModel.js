@@ -17,14 +17,21 @@ const relatedModel = (sequelize, { DataTypes }) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-  });
+  }, { freezeTableName: true });
 
-  Related.findFeaturesByProductId = async (productId) => {
-    const rel = await Related.findAll({
+  Related.allRelatedProducts = async (productId) => {
+    const relProducts = await Related.findAll({
       where: { product_id: productId },
       attributes: { exclude: ['createdAt', 'updatedAt', 'id', 'product_id'] },
     });
-    return rel;
+    const convert = (arr) => {
+      arr.forEach((elem, i) => {
+        // eslint-disable-next-line no-param-reassign
+        arr[i] = (elem.related_product_id);
+      });
+      return arr;
+    };
+    return convert(relProducts);
   };
 
   return Related;

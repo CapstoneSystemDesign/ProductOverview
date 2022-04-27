@@ -61,7 +61,7 @@ app.get('/products/:product_id/styles', (req, res) => {
 });
 
 app.get('/products/:product_id/related', (req, res) => {
-  db.models.Related.allProducts({})
+  db.models.Related.allRelatedProducts(req.params.product_id)
     .then((returnedRelated) => {
       // console.log(returnedProducts);
       res.json(returnedRelated);
