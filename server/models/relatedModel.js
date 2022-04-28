@@ -1,5 +1,5 @@
-const productsModel = (sequelize, { DataTypes }) => {
-  const Product = sequelize.define('product', {
+const relatedModel = (sequelize, { DataTypes }) => {
+  const Related = sequelize.define('related', {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -9,40 +9,32 @@ const productsModel = (sequelize, { DataTypes }) => {
         notEmpty: true,
       },
     },
-    name: {
-      type: DataTypes.STRING,
+    product_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    category: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    default_price: {
+    related_product_id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
-  });
+  }, { freezeTableName: true });
 
-  Product.allProducts = async () => {
-    const products = await Product.findAll({
-      limit: 10, // will need to remove when ready for final release
+  Related.allRelatedProducts = async (productId) => {
+    const relProducts = await Related.findAll({
+      where: { product_id: productId },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'id', 'product_id'] },
     });
-    return products;
+    const convert = (arr) => {
+      arr.forEach((elem, i) => {
+        // eslint-disable-next-line no-param-reassign
+        arr[i] = (elem.related_product_id);
+      });
+      return arr;
+    };
+    return convert(relProducts);
   };
 
-  Product.findById = async (productId) => {
-    const product = await Product.findOne({
-      where: { id: productId }, // consider omitting created_at & updated_at colns
-    });
-    return product;
-  };
-
-  return Product;
+  return Related;
 };
 
-// export default productsModel;
-module.exports = productsModel;
+module.exports = relatedModel;

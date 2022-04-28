@@ -1,7 +1,15 @@
 SDCproductsOverview
 .Archive
 logfile
-
+routes
+libs
+test-api.json
+env.json
+k6-script.js
+script.js
+Baustin.cer
+Baustin.pem
+sdcSchemas.excalidraw
 
 # Logs
 logs
