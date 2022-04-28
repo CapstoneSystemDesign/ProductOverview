@@ -28,7 +28,7 @@ const stylesModel = (sequelize, { DataTypes }) => {
       allowNull: false,
     },
     'default?': {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
   });

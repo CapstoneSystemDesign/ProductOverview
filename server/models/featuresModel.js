@@ -23,21 +23,15 @@ const featuresModel = (sequelize, { DataTypes }) => {
     },
   });
 
-  // Features.associate = (models) => {
-  //   Features.belongsTo(models.Product);
-  // };
-
   Features.findFeaturesByProductId = async (productId) => {
     const feats = await Features.findAll({
-      where: { product_id: productId }, // consider omitting created_at & updated_at colns
-      attributes: { exclude: ['createdAt', 'updatedAt', 'id', 'product_id'] }, // also, can use "include: ['...']"
+      where: { product_id: productId },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'id', 'product_id'] },
     });
-    // console.log('feats: ', feats);
-    return feats; // must be an array of objs
+    return feats;
   };
 
   return Features;
 };
 
-// export default featuresModel;
 module.exports = featuresModel;
